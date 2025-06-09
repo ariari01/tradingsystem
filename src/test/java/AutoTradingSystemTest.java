@@ -70,6 +70,8 @@ public class AutoTradingSystemTest {
         public static final String NOT_IMPORTANT_STOCK_CODE = "123456";
         public static final int NOT_IMPORTANT_STOCK_SHARE = 3500;
         public static final int NOT_IMPORTANT_CURRENT_STOCK_PRICE = 10000;
+        public static final int NOT_IMPORTANT_DECREASED_PRICE = NOT_IMPORTANT_CURRENT_STOCK_PRICE - 1000;
+        public static final int WANTED_NUMBER_OF_CURRENT_PRICE_INVOCATIONS = AutoTradingSystem.MAX_SELL_NICE_COUNT + 1;
         AutoTradingSystem autoTradingSystem;
 
         @BeforeEach
@@ -116,25 +118,25 @@ public class AutoTradingSystemTest {
 
             autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
 
-            verify(mockStockBroker, times(101)).currentPrice(anyString());
+            verify(mockStockBroker, times(WANTED_NUMBER_OF_CURRENT_PRICE_INVOCATIONS)).currentPrice(anyString());
             verify(mockStockBroker, never()).sell(anyString(), anyInt(), anyInt());
         }
 
         @Test
         void 상승_추세가_100회_동안_계속될_때_매도하지_않는_경우() {
-            AtomicInteger price = new AtomicInteger(10000);
+            AtomicInteger price = new AtomicInteger(NOT_IMPORTANT_CURRENT_STOCK_PRICE);
             doAnswer(invocationOnMock -> price.getAndAdd(100))
                     .when(mockStockBroker).currentPrice(anyString());
 
             autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
 
-            verify(mockStockBroker, times(101)).currentPrice(anyString());
+            verify(mockStockBroker, times(WANTED_NUMBER_OF_CURRENT_PRICE_INVOCATIONS)).currentPrice(anyString());
             verify(mockStockBroker, never()).sell(anyString(), anyInt(), anyInt());
         }
 
         @Test
         void 하락_추세가_발생_시_매도하는_경우() {
-            doReturn(NOT_IMPORTANT_CURRENT_STOCK_PRICE, NOT_IMPORTANT_CURRENT_STOCK_PRICE - 1000)
+            doReturn(NOT_IMPORTANT_CURRENT_STOCK_PRICE, NOT_IMPORTANT_DECREASED_PRICE)
                     .when(mockStockBroker).currentPrice(anyString());
 
             autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);

@@ -1,4 +1,5 @@
 public class AutoTradingSystem {
+    public static final int MAX_SELL_NICE_COUNT = 100;
     private StockBroker stockBroker;
 
     void selectStockBroker(StockBroker stockBroker) {
@@ -29,7 +30,7 @@ public class AutoTradingSystem {
             throw new IllegalArgumentException();
 
         int prevPrice = stockBroker.currentPrice(stockCode);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < MAX_SELL_NICE_COUNT; i++) {
             int curPrice = stockBroker.currentPrice(stockCode);
             if (prevPrice > curPrice) {
                 stockBroker.sell(stockCode, share, curPrice);
