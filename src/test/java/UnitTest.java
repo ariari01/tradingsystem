@@ -40,4 +40,13 @@ public class UnitTest {
 
     }
 
+    @Test
+    void checkCurrentPrice3() throws InterruptedException {
+        nemoAPI=new NemoAPI();
+
+        int actual=nemoAPI.getMarketPrice("S&P500",gi1;
+        assertNotNull(actual);
+
+    }
+
 }
