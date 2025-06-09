@@ -31,4 +31,16 @@ public class AutoTradingSystem {
         isValidSellArguments(stockCode, price, count);
         stockBroker.sell(stockCode, price, count);
     }
+
+    public void buy(String stockCode, int price, int count) {
+        isValidBuyArguments(stockCode, price, count);
+        stockBroker.buy(stockCode,price,count);
+    }
+
+    private static void isValidBuyArguments(String stockCode, int price, int count) {
+        if (stockCode.isEmpty() || price <= 0 || count <= 0) {
+            throw new IllegalArgumentException("para is negative integer");
+        }
+    }
+
 }
