@@ -15,6 +15,11 @@ public class NemoDriver implements StockBroker {
     }
 
     @Override
+    public void sell(String stockCode, int price, int count) {
+        api.sellingStock(stockCode, price, count);
+    }
+
+    @Override
     public void getMarketPrice(String stockCode,int min) throws InterruptedException {
         api.getMarketPrice(stockCode,min);
     }

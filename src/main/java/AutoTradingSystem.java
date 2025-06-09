@@ -21,6 +21,17 @@ public class AutoTradingSystem {
         return string == null || string.isEmpty();
     }
 
+    private static void isValidSellArguments(String stockCode, int price, int count) {
+        if (stockCode.length() == 0 || price <= 0 || count <= 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void sell(String stockCode, int price, int count) {
+        isValidSellArguments(stockCode, price, count);
+        stockBroker.sell(stockCode, price, count);
+    }
+
 
     int getCurrentMarketPrice(String stockCode) throws InterruptedException {
 
@@ -28,9 +39,8 @@ public class AutoTradingSystem {
             throw new IllegalArgumentException("주식코드가 잘못되었습니다");
         }
 
-
-
-        stockBroker.getMarketPrice(stockCode,1);
+        int currentTimeInfo = 0;
+        stockBroker.getMarketPrice(stockCode, currentTimeInfo);
 
         return 0;
     }

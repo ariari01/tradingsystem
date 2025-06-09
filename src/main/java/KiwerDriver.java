@@ -15,9 +15,17 @@ public class KiwerDriver implements StockBroker {
     }
 
     @Override
+    public void sell(String stockCode, int price, int count) {
+        api.sell(stockCode, price, count);
+    }
+
+    @Override
     public void getMarketPrice(String stockCode,int min)  {
-        if(min==1){
+        //Kiwer는 현재 시간의 Price만 제공한다.
+        if(min<=1){
             api.currentPrice(stockCode);
+        }else {
+            return ;
         }
     }
 }
