@@ -22,12 +22,17 @@ public class AutoTradingSystem {
     }
 
 
-    void selectStockBroker(StockBrocker stockBroker) {
-        this.stockBrocker = stockBroker;
-    }
+    int getCurrentMarketPrice(String stockCode) throws InterruptedException {
 
-    void getCurrentMarketPrice(String code){
+        if (isNullOrEmpty(stockCode)) {
+            throw new IllegalArgumentException("주식코드가 잘못되었습니다");
+        }
 
+
+
+        stockBroker.getMarketPrice(stockCode,1);
+
+        return 0;
     }
 
 }

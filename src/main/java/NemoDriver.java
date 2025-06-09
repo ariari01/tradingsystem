@@ -13,4 +13,9 @@ public class NemoDriver implements StockBroker {
     public void login(String id, String password) {
         api.certification(id, password);
     }
+
+    @Override
+    public void getMarketPrice(String stockCode,int min) throws InterruptedException {
+        api.getMarketPrice(stockCode,min);
+    }
 }
