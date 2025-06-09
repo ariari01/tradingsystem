@@ -1,4 +1,5 @@
 public class AutoTradingSystem {
+    public static final int MAX_SELL_NICE_COUNT = 100;
     private StockBroker stockBroker;
 
     void selectStockBroker(StockBroker stockBroker) {
@@ -21,20 +22,56 @@ public class AutoTradingSystem {
         return string == null || string.isEmpty();
     }
 
-    public void buy(String stockCode, int price, int count) {
-        isValidBuyArguments(stockCode, price, count);
-        stockBroker.buy(stockCode, price, count);
+    public void sellNiceTiming(String stockCode, int share) throws InterruptedException {
+        if (isNullOrEmpty(stockCode))
+            throw new IllegalArgumentException();
+
+        if (share <= 0)
+            throw new IllegalArgumentException();
+
+        int prevPrice = stockBroker.getMarketPrice(stockCode, 100);
+        for (int i = 0; i < MAX_SELL_NICE_COUNT; i++) {
+            int curPrice = stockBroker.getMarketPrice(stockCode, 100);
+            if (prevPrice > curPrice) {
+                stockBroker.sell(stockCode, curPrice, share);
+                return;
+            }
+            prevPrice = curPrice;
+        }
     }
 
-    private static void isValidBuyArguments(String stockCode, int price, int count) {
+    private static void isValidSellArguments(String stockCode, int price, int count) {
         if (stockCode.length() == 0 || price <= 0 || count <= 0) {
             throw new IllegalArgumentException();
         }
     }
-
-    public int getPrice(String stockCode){
-        return stockBroker.getPrice(stockCode);
+  
+  public void sell(String stockCode, int price, int count) {
+        isValidSellArguments(stockCode, price, count);
+        stockBroker.sell(stockCode, price, count);
     }
+
+    public void buy(String stockCode, int price, int count) {
+        isValidBuyArguments(stockCode, price, count);
+        stockBroker.buy(stockCode,price,count);
+    }
+
+    private static void isValidBuyArguments(String stockCode, int price, int count) {
+        if (stockCode.isEmpty() || price <= 0 || count <= 0) {
+            throw new IllegalArgumentException("para is negative integer");
+        }
+    }
+
+    int getCurrentMarketPrice(String stockCode) throws InterruptedException {
+
+        if (isNullOrEmpty(stockCode)) {
+            throw new IllegalArgumentException("주식코드가 잘못되었습니다");
+        }
+
+        int currentTimeInfo = 0;
+        stockBroker.getMarketPrice(stockCode, currentTimeInfo);
+
+        return 0;
 
     boolean checkIncreasingTrend(String stockCode){
         return stockBroker.checkIncreasingTrend(stockCode);
