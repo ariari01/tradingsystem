@@ -1,11 +1,10 @@
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -17,13 +16,25 @@ public class UnitTest {
     @Mock
     NemoAPI nemoAPI;
 
-    @Test
-    void selectStockBroker() {
-        KiwerDriver driver = new KiwerDriver(kiwerAPI);
-        doNothing().when(kiwerAPI).login(anyString(), anyString());
+    @Nested
+    class LoginTest {
 
-        driver.login("qwe", "qwe");
+        @Test
+        void Kiwer_로그인_시_ID가_Null이면_예외발생() {
+            AutoTradingSystem autoTradingSystem = new AutoTradingSystem();
+            autoTradingSystem.selectStockBroker("Kiwer");
 
-        verify(kiwerAPI, times(1)).login(anyString(), anyString());
+            assertThatThrownBy(() -> autoTradingSystem.login(null, "PASSWORD"))
+                    .isInstanceOf(Exception.class);
+        }
+
+        @Test
+        void Nemo_로그인_시_ID가_Null이면_예외발생() {
+            AutoTradingSystem autoTradingSystem = new AutoTradingSystem();
+            autoTradingSystem.selectStockBroker("Nemo");
+
+            assertThatThrownBy(() -> autoTradingSystem.login(null, "PASSWORD"))
+                    .isInstanceOf(Exception.class);
+        }
     }
 }
