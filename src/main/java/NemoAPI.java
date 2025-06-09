@@ -11,7 +11,7 @@ public class NemoAPI {
     public void sellingStock( String stockCode , int price, int count) {
         System.out.println("[네모]" + stockCode + "를 " + price + "가격에 매도하였음");
     }
-    public int getMarketPrice ( String stockCode, int minute) throws InterruptedException {
+    public int getMarketPrice ( String stockCode, int minute) {
         //minute ms초 이후 구매가 되는 방식 (최소 1 ms)
         if (minute <= 0) minute = 1;
         Thread.sleep(minute);

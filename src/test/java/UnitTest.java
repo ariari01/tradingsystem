@@ -4,6 +4,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,8 +35,27 @@ public class UnitTest {
     @Test
     void buyStockByKiwerDriver() {
         StockBroker kiwerDriver = new KiwerDriver(kiwerAPI);
-        kiwerDriver.buy("APPL",33,123);
+        kiwerDriver.buy("APPL", 33, 123);
         verify(kiwerAPI, times(1)).buy(anyString(), anyInt(), anyInt());
+
+    }
+
+    @Test
+    void buyStockByMockDriver() {
+        //Arrange
+        StockBroker mockDriver = new MockDriver();
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream outputContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputContent));
+
+        //Act
+        mockDriver.buy("APPL", 33, 123);
+
+        //Assert
+        assertEquals("Mock Driver Buy Success", outputContent.toString());
+        System.setOut(originalOut);
+
+
     }
 
 
