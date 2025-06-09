@@ -77,6 +77,38 @@ public class AutoTradingSystemTest {
         }
 
         @Test
+        void 입력된_종목코드가_Null인_경우() {
+            assertThatThrownBy(() -> autoTradingSystem.sellNiceTiming(null, NOT_IMPORTANT_STOCK_SHARE))
+                    .isInstanceOf(IllegalArgumentException.class);
+
+            verify(mockStockBroker, never()).currentPrice(anyString());
+        }
+
+        @Test
+        void 입력된_종목코드가_Empty_String인_경우() {
+            assertThatThrownBy(() -> autoTradingSystem.sellNiceTiming("", NOT_IMPORTANT_STOCK_SHARE))
+                    .isInstanceOf(IllegalArgumentException.class);
+
+            verify(mockStockBroker, never()).currentPrice(anyString());
+        }
+
+        @Test
+        void 입력된_주식_수량이_0인_경우() {
+            assertThatThrownBy(() -> autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, 0))
+                    .isInstanceOf(IllegalArgumentException.class);
+
+            verify(mockStockBroker, never()).currentPrice(anyString());
+        }
+
+        @Test
+        void 입력된_주식_수량이_마이너스인_경우() {
+            assertThatThrownBy(() -> autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, -1))
+                    .isInstanceOf(IllegalArgumentException.class);
+
+            verify(mockStockBroker, never()).currentPrice(anyString());
+        }
+
+        @Test
         void 변동이_없을_때_매도하지_않는_경우() {
             doReturn(NOT_IMPORTANT_CURRENT_STOCK_PRICE).when(mockStockBroker).currentPrice(anyString());
 
