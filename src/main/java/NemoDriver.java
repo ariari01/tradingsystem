@@ -21,6 +21,7 @@ public class NemoDriver implements StockBroker {
 
     @Override
     public void buy(String stockCode, int price, int quantity) {
+        if (price<0 ||quantity<0) throw new IllegalArgumentException("para is negative integer");
         try {
             api.purchasingStock(stockCode, price, quantity);
         } catch (Exception e) {
