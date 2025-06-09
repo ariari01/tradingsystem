@@ -11,10 +11,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class UnitTest {
     @Mock
-    KiwerAPI kiwerAPI;
+    KiwerDriver kiwerAPI;
 
     @Mock
-    NemoAPI nemoAPI;
+    NemoDriver nemoAPI;
 
     @Nested
     class LoginTest {
@@ -58,7 +58,7 @@ public class UnitTest {
         @Test
         void Broker가_Kiwer_일_때_로그인_성공() {
             AutoTradingSystem autoTradingSystem = new AutoTradingSystem();
-            autoTradingSystem.selectStockBroker("Kiwer");
+            autoTradingSystem.selectStockBroker(kiwerAPI);
             doNothing().when(kiwerAPI).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
 
             autoTradingSystem.login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
@@ -69,12 +69,12 @@ public class UnitTest {
         @Test
         void Broker가_Nemo_일_때_로그인_성공() {
             AutoTradingSystem autoTradingSystem = new AutoTradingSystem();
-            autoTradingSystem.selectStockBroker("Kiwer");
-            doNothing().when(nemoAPI).certification(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+            autoTradingSystem.selectStockBroker(nemoAPI);
+            doNothing().when(nemoAPI).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
 
             autoTradingSystem.login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
 
-            verify(kiwerAPI, only()).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+            verify(nemoAPI, only()).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
         }
     }
 }

@@ -4,12 +4,8 @@ public class AutoTradingSystem {
 
     private StockBroker stockBroker;
 
-    void selectStockBroker(String name) {
-        switch (name) {
-            case KIWER -> stockBroker = new KiwerDriver();
-            case NEMO -> stockBroker = new NemoDriver();
-            default -> throw new RuntimeException();
-        }
+    void selectStockBroker(StockBroker stockBroker) {
+        this.stockBroker = stockBroker;
     }
 
     public void login(String id, String password) {
@@ -21,6 +17,7 @@ public class AutoTradingSystem {
             throw new IllegalArgumentException("PASSWORD is Null");
         }
 
+        stockBroker.login(id, password);
     }
 
     private boolean isNullOrEmpty(String string) {

@@ -1,6 +1,8 @@
 public class KiwerDriver implements StockBroker {
-    @Override
-    public void login(String ID, String Password) {
+    KiwerAPI api = new KiwerAPI();
 
+    @Override
+    public void login(String id, String password) {
+        api.login(id, password);
     }
 }
