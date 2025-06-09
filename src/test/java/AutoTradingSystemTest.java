@@ -5,6 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
@@ -114,6 +116,19 @@ public class AutoTradingSystemTest {
 
             autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
 
+            verify(mockStockBroker, times(101)).currentPrice(anyString());
+            verify(mockStockBroker, never()).sell(anyString(), anyInt(), anyInt());
+        }
+
+        @Test
+        void 상승_추세가_100회_동안_계속될_때_매도하지_않는_경우() {
+            AtomicInteger price = new AtomicInteger(10000);
+            doAnswer(invocationOnMock -> price.getAndAdd(100))
+                    .when(mockStockBroker).currentPrice(anyString());
+
+            autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
+
+            verify(mockStockBroker, times(101)).currentPrice(anyString());
             verify(mockStockBroker, never()).sell(anyString(), anyInt(), anyInt());
         }
     }
