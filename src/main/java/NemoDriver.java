@@ -19,6 +19,14 @@ public class NemoDriver implements StockBroker {
         api.sellingStock(stockCode, price, count);
     }
 
+    public void buy(String stockCode, int price, int count) {
+        try {
+            api.purchasingStock(stockCode, price, count);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     @Override
     public void getMarketPrice(String stockCode,int min) throws InterruptedException {
         api.getMarketPrice(stockCode,min);
