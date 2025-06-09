@@ -17,16 +17,16 @@ public class KiwerDriver implements StockBroker {
 
     @Override
     public void buy(String stockCode, int count, int price) {
-
+        throw new RuntimeException("Not implemented");
     }
 
     @Override
     public void sell(String stockCode, int count, int price) {
-
+        throw new RuntimeException("Not implemented");
     }
 
     @Override
     public int currentPrice(String stockCode) {
-        return 0;
+        throw new RuntimeException("Not implemented");
     }
 }

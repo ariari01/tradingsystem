@@ -65,6 +65,9 @@ public class AutoTradingSystemTest {
 
     @Nested
     class SellNiceTimingTest {
+        public static final String NOT_IMPORTANT_STOCK_CODE = "123456";
+        public static final int NOT_IMPORTANT_STOCK_SHARE = 3500;
+        public static final int NOT_IMPORTANT_CURRENT_STOCK_PRICE = 10000;
         AutoTradingSystem autoTradingSystem;
 
         @BeforeEach
@@ -75,9 +78,9 @@ public class AutoTradingSystemTest {
 
         @Test
         void 변동이_없을_때_매도하지_않는_경우() {
-            doReturn(10000).when(mockStockBroker).currentPrice(anyString());
+            doReturn(NOT_IMPORTANT_CURRENT_STOCK_PRICE).when(mockStockBroker).currentPrice(anyString());
 
-            autoTradingSystem.sellNiceTiming("151515", 3500);
+            autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
 
             verify(mockStockBroker, never()).sell(anyString(), anyInt(), anyInt());
         }

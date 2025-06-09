@@ -24,7 +24,7 @@ public class AutoTradingSystem {
     public void sellNiceTiming(String stockCode, int share) {
         int curPrice = stockBroker.currentPrice(stockCode);
 
-        for(int i = 0;i<100;i++) {
+        for (int i = 0; i < 100; i++) {
         }
     }
 }
