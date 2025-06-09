@@ -131,5 +131,15 @@ public class AutoTradingSystemTest {
             verify(mockStockBroker, times(101)).currentPrice(anyString());
             verify(mockStockBroker, never()).sell(anyString(), anyInt(), anyInt());
         }
+
+        @Test
+        void 하락_추세가_발생_시_매도하는_경우() {
+            doReturn(NOT_IMPORTANT_CURRENT_STOCK_PRICE, NOT_IMPORTANT_CURRENT_STOCK_PRICE - 1000)
+                    .when(mockStockBroker).currentPrice(anyString());
+
+            autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
+
+            verify(mockStockBroker, times(1)).sell(anyString(), anyInt(), anyInt());
+        }
     }
 }
