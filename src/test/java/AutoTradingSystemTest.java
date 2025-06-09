@@ -1,13 +1,15 @@
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.concurrent.atomic.AtomicInteger;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,7 +27,6 @@ public class AutoTradingSystemTest {
 
     @Nested
     class LoginTest {
-
         AutoTradingSystem autoTradingSystem;
 
         public static final String NOT_IMPORTANT_ID = "ID";
@@ -98,9 +99,7 @@ public class AutoTradingSystemTest {
         public static final int NOT_IMPORTANT_CURRENT_STOCK_PRICE = 10000;
         public static final int NOT_IMPORTANT_DECREASED_PRICE = NOT_IMPORTANT_CURRENT_STOCK_PRICE - 1000;
         public static final int WANTED_NUMBER_OF_CURRENT_PRICE_INVOCATIONS = AutoTradingSystem.MAX_SELL_NICE_COUNT + 1;
-
-        AutoTradingSystem autoTradingSystem;
-
+        
         @BeforeEach
         void setUp() {
             autoTradingSystem = new AutoTradingSystem();
@@ -252,5 +251,135 @@ public class AutoTradingSystemTest {
                 verify(nemoApi, times(1)).sellingStock(anyString(), anyInt(), anyInt());
             }
         }
+    }
+    class SellTest {
+        AutoTradingSystem autoTradingSystem;
+
+        @BeforeEach
+        void setUp() {
+            autoTradingSystem = new AutoTradingSystem();
+        }
+
+        public static final String NOT_IMPORTANT_STOCK_CODE = "STOCKSTOCK";
+        public static final int NOT_IMPORTANT_PRICE = 123;
+        public static final int NOT_IMPORTANT_COUNT = 1;
+
+        @Test
+        @DisplayName("Kiwer 증권에 팔기")
+        void sell_kiwer_api() {
+            autoTradingSystem.selectStockBroker(new KiwerDriver(kiwerApi));
+            doNothing().when(kiwerApi).sell(anyString(), anyInt(), anyInt());
+
+            autoTradingSystem.sell(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_PRICE, NOT_IMPORTANT_COUNT);
+
+            verify(kiwerApi, only()).sell(anyString(), anyInt(), anyInt());
+        }
+
+        @Test
+        @DisplayName("Nemo 증권에 팔기")
+        void sell_nemo_api() {
+            autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
+            doNothing().when(nemoApi).sellingStock(anyString(), anyInt(), anyInt());
+
+            autoTradingSystem.sell(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_PRICE, NOT_IMPORTANT_COUNT);
+
+            verify(nemoApi, only()).sellingStock(anyString(), anyInt(), anyInt());
+        }
+
+        @Test
+        @DisplayName("잘못된 파라메터 값으로 sell 호출 시 에러")
+        void invalid_input_for_sell() {
+            autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> {
+                autoTradingSystem.sell("", 0, 0);
+            });
+        }
+    }
+
+    @Nested
+    class BuyTest {
+        AutoTradingSystem autoTradingSystem;
+        public static final String TEST_STOCK_CODE = "APPL";
+        public static final int TEST_VALID_PRICE = 33;
+        public static final int TEST_VALID_COUNT = 123;
+        public static final int TEST_INVALID_PRICE = -1;
+        public static final int TEST_INVALID_COUNT = -1;
+
+        @BeforeEach
+        void setUp() {
+            autoTradingSystem = new AutoTradingSystem();
+        }
+
+        @Test
+        void Broker가_Kiwer_일_때_Buy_성공() {
+            autoTradingSystem.selectStockBroker(new KiwerDriver(kiwerApi));
+            autoTradingSystem.buy(TEST_STOCK_CODE, TEST_VALID_PRICE, TEST_VALID_COUNT);
+            verify(kiwerApi, times(1)).buy(anyString(), anyInt(), anyInt());
+        }
+
+        @Test
+        void Broker가_Kiwer_일_때_Illegal_Parameter_입력_Exception_발생() {
+            autoTradingSystem.selectStockBroker(new KiwerDriver(kiwerApi));
+            assertThrows(IllegalArgumentException.class, () -> {
+                autoTradingSystem.buy(TEST_STOCK_CODE, TEST_INVALID_PRICE, TEST_VALID_COUNT);
+            });
+
+            assertThrows(IllegalArgumentException.class, () -> {
+                autoTradingSystem.buy(TEST_STOCK_CODE, TEST_VALID_PRICE, TEST_INVALID_COUNT);
+            });
+        }
+
+        @Test
+        void Broker가_Nemo_일_때_Buy_성공() {
+            autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
+            autoTradingSystem.buy(TEST_STOCK_CODE, TEST_VALID_PRICE, TEST_VALID_COUNT);
+            verify(nemoApi, times(1)).purchasingStock(anyString(), anyInt(), anyInt());
+        }
+
+        @Test
+        void Broker가_Nemo_일_때_Illegal_Parameter_입력_Exception_발생() {
+            autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
+            assertThrows(IllegalArgumentException.class, () -> {
+                autoTradingSystem.buy(TEST_STOCK_CODE, TEST_INVALID_PRICE, TEST_VALID_COUNT);
+            });
+            assertThrows(IllegalArgumentException.class, () -> {
+                autoTradingSystem.buy(TEST_STOCK_CODE, TEST_VALID_PRICE, TEST_INVALID_COUNT);
+            });
+        }
+    }
+
+    @Nested
+    class currentPriceTest {
+
+        AutoTradingSystem autoTradingSystem;
+
+        public static final String NOT_IMPORTANT_STOCK_CODE = "StockCode";
+
+        @BeforeEach
+        void setUp() {
+            autoTradingSystem = new AutoTradingSystem();
+        }
+
+
+        @Test
+        void 주식코드_값이NULL일때() throws InterruptedException {
+            assertThatThrownBy(() -> autoTradingSystem.getCurrentMarketPrice(null))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void Kiwer_주식코드로_현재_시장가격_가져오기() throws InterruptedException {
+            autoTradingSystem.selectStockBroker(new KiwerDriver(kiwerApi));
+            int actual=autoTradingSystem.getCurrentMarketPrice(NOT_IMPORTANT_STOCK_CODE);
+            assertNotNull(actual);
+        }
+
+        @Test
+        void Nemo_주식코드로_현재_시장가격_가져오기() throws InterruptedException {
+            autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
+            int actual=autoTradingSystem.getCurrentMarketPrice(NOT_IMPORTANT_STOCK_CODE);
+            assertNotNull(actual);
+        }
+
     }
 }

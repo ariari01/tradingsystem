@@ -1,6 +1,6 @@
 public interface StockBroker {
     void login(String ID, String Password);
-    void buy(String stockCode, int count, int price);
-    void sell(String stockCode, int count, int price);
-    int currentPrice(String stockCode);
+    void sell(String stockCode, int price, int count);
+    void buy(String stockCode, int price, int count);
+    void getMarketPrice(String stockCode, int minute) throws InterruptedException;
 }

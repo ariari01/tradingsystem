@@ -1,5 +1,3 @@
-import jdk.jshell.spi.ExecutionControl;
-
 public class NemoDriver implements StockBroker {
     private final NemoAPI api;
 
@@ -17,17 +15,20 @@ public class NemoDriver implements StockBroker {
     }
 
     @Override
-    public void buy(String stockCode, int count, int price) {
-        throw new RuntimeException("Not implemented");
+    public void sell(String stockCode, int price, int count) {
+        api.sellingStock(stockCode, price, count);
+    }
+
+    public void buy(String stockCode, int price, int count) {
+        try {
+            api.purchasingStock(stockCode, price, count);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
-    public void sell(String stockCode, int count, int price) {
-        throw new RuntimeException("Not implemented");
-    }
-
-    @Override
-    public int currentPrice(String stockCode) {
-        throw new RuntimeException("Not implemented");
+    public void getMarketPrice(String stockCode,int min) throws InterruptedException {
+        api.getMarketPrice(stockCode,min);
     }
 }
