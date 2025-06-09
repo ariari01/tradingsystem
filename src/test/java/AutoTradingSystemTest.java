@@ -17,6 +17,12 @@ public class AutoTradingSystemTest {
     @Mock
     StockBroker mockStockBroker;
 
+    @Mock
+    KiwerAPI kiwerApi;
+
+    @Mock
+    NemoAPI nemoApi;
+
     @Nested
     class LoginTest {
 
@@ -62,6 +68,26 @@ public class AutoTradingSystemTest {
             autoTradingSystem.login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
 
             verify(mockStockBroker, only()).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+        }
+
+        @Test
+        void Broker가_Kiwer_일_때_로그인_성공() {
+            autoTradingSystem.selectStockBroker(new KiwerDriver(kiwerApi));
+            doNothing().when(kiwerApi).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+
+            autoTradingSystem.login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+
+            verify(kiwerApi, only()).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+        }
+
+        @Test
+        void Broker가_Nemo_일_때_로그인_성공() {
+            autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
+            doNothing().when(nemoApi).certification(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+
+            autoTradingSystem.login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+
+            verify(nemoApi, only()).certification(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
         }
     }
 
