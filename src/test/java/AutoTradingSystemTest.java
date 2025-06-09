@@ -1,7 +1,4 @@
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,9 +30,6 @@ public class AutoTradingSystemTest {
         public static final String NOT_IMPORTANT_ID = "ID";
         public static final String NOT_IMPORTANT_PASSWORD = "PASSWORD";
         public static final String EMPTY_STRING = "";
-        public static final String NOT_IMPORTANT_STOCK_CODE = "STOCKSTOCK";
-        public static final int NOT_IMPORTANT_PRICE = 123;
-        public static final int NOT_IMPORTANT_COUNT = 1;
 
         @BeforeEach
         void setUp() {
@@ -85,8 +79,23 @@ public class AutoTradingSystemTest {
 
             verify(nemoApi, only()).certification(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
         }
+    }
+
+    @Nested
+    class SellTest {
+        AutoTradingSystem autoTradingSystem;
+
+        @BeforeEach
+        void setUp() {
+            autoTradingSystem = new AutoTradingSystem();
+        }
+
+        public static final String NOT_IMPORTANT_STOCK_CODE = "STOCKSTOCK";
+        public static final int NOT_IMPORTANT_PRICE = 123;
+        public static final int NOT_IMPORTANT_COUNT = 1;
 
         @Test
+        @DisplayName("Kiwer 증권에 팔기")
         void sell_kiwer_api() {
             autoTradingSystem.selectStockBroker(new KiwerDriver(kiwerApi));
             doNothing().when(kiwerApi).sell(anyString(), anyInt(), anyInt());
@@ -97,6 +106,7 @@ public class AutoTradingSystemTest {
         }
 
         @Test
+        @DisplayName("Nemo 증권에 팔기")
         void sell_nemo_api() {
             autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
             doNothing().when(nemoApi).sellingStock(anyString(), anyInt(), anyInt());
@@ -107,6 +117,7 @@ public class AutoTradingSystemTest {
         }
 
         @Test
+        @DisplayName("잘못된 파라메터 값으로 sell 호출 시 에러")
         void invalid_input_for_sell() {
             autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
             Assertions.assertThrows(IllegalArgumentException.class, () -> {
@@ -114,7 +125,6 @@ public class AutoTradingSystemTest {
             });
         }
     }
-
 
     @Nested
     class BuyTest {
