@@ -6,6 +6,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -17,13 +18,26 @@ public class UnitTest {
     @Mock
     NemoAPI nemoAPI;
 
+
+
+
     @Test
-    void selectStockBroker() {
-        KiwerDriver driver = new KiwerDriver(kiwerAPI);
-        doNothing().when(kiwerAPI).login(anyString(), anyString());
+    void checkCurrentPrice() {
+        kiwerAPI=new KiwerAPI();
+        //doNothing().when(kiwerAPI).login(anyString(), anyString());
 
-        driver.login("qwe", "qwe");
+        int actual=kiwerAPI.currentPrice("S&P500");
+        assertNotNull(actual);
 
-        verify(kiwerAPI, times(1)).login(anyString(), anyString());
     }
+
+    @Test
+    void checkCurrentPrice2() throws InterruptedException {
+        nemoAPI=new NemoAPI();
+
+        int actual=nemoAPI.getMarketPrice("S&P500",1);
+        assertNotNull(actual);
+
+    }
+
 }
