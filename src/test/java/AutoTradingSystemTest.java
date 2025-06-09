@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -88,6 +90,119 @@ public class AutoTradingSystemTest {
             autoTradingSystem.login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
 
             verify(nemoApi, only()).certification(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+        }
+    }
+
+    @Nested
+    class BuyNiceTimingTest {
+        @Mock
+        KiwerAPI mockKiwerAPI;
+
+        @Mock
+        NemoAPI mockNemoAPI;
+
+        @Mock
+        KiwerDriver mockKiwerDriver;
+
+        @Mock
+        NemoDriver mockNemoDriver;
+
+        @BeforeEach
+        void setUp() {
+            autoTradingSystem = new AutoTradingSystem();
+        }
+
+        @Test
+        void 증가하는_추세_확인_kiwer_api() throws InterruptedException {
+            StockBroker kiwerDriver = new KiwerDriver(mockKiwerAPI);
+            autoTradingSystem.selectStockBroker(kiwerDriver);
+            Application app = new Application(autoTradingSystem);
+
+            app.buyNiceTiming("KIWER", 5000);
+
+            verify(mockKiwerAPI, atLeast(2)).currentPrice(anyString());
+        }
+
+        @Test
+        void 증가하는_추세_확인_kiwer() throws InterruptedException {
+            autoTradingSystem.selectStockBroker(mockKiwerDriver);
+            Application app = new Application(autoTradingSystem);
+
+            app.buyNiceTiming("KIWER", 5000);
+
+            verify(mockKiwerDriver, times(1)).checkIncreasingTrend(anyString());
+        }
+
+        @Test
+        void 증가하는_추세_확인_nemo_api() throws InterruptedException {
+            StockBroker nemoDriver = new NemoDriver(mockNemoAPI);
+            autoTradingSystem.selectStockBroker(nemoDriver);
+            Application app = new Application(autoTradingSystem);
+
+            app.buyNiceTiming("KIWER", 5000);
+
+            verify(mockNemoAPI, atLeast(2)).getMarketPrice(anyString(), anyInt());
+        }
+
+        @Test
+        void 증가하는_추세_확인_nemo() throws InterruptedException {
+            autoTradingSystem.selectStockBroker(mockNemoDriver);
+            Application app = new Application(autoTradingSystem);
+
+            app.buyNiceTiming("KIWER", 5000);
+
+            verify(mockNemoDriver, times(1)).checkIncreasingTrend(anyString());
+        }
+
+        @Test
+        void 현재가_확인_kiwer() throws InterruptedException {
+            autoTradingSystem.selectStockBroker(mockKiwerDriver);
+            Application app = new Application(autoTradingSystem);
+
+            app.buyNiceTiming("NEMO", 5000);
+
+            verify(mockKiwerDriver, times(1)).getMarketPrice(anyString(), anyInt());
+        }
+
+        @Test
+        void 현재가_확인_Nemo() throws InterruptedException {
+            autoTradingSystem.selectStockBroker(mockNemoDriver);
+            Application app = new Application(autoTradingSystem);
+
+            app.buyNiceTiming("NEMO", 5000);
+
+            verify(mockNemoDriver, times(1)).getMarketPrice(anyString(), anyInt());
+        }
+
+        @Spy
+        AutoTradingSystem mockAutoTradingSystem;
+
+        @Test
+        void 매수량_확인_kiwer() throws InterruptedException {
+            mockAutoTradingSystem.selectStockBroker(mockKiwerDriver);
+            Application app = new Application(mockAutoTradingSystem);
+
+            doReturn(1000).when(app.autoTradingSystem).getCurrentMarketPrice(anyString());
+            doReturn(true).when(app.autoTradingSystem).checkIncreasingTrend(anyString());
+            doReturn(3).when(app.autoTradingSystem).getCount(anyInt(), anyInt());
+
+            app.buyNiceTiming("KIWER", 5000);
+
+            verify(mockKiwerDriver, times(3)).buy(anyString(), anyInt(), anyInt());
+        }
+
+        @Test
+        void 매수량_확인_Nemo() throws InterruptedException {
+            mockAutoTradingSystem.selectStockBroker(mockNemoDriver);
+            Application app = new Application(mockAutoTradingSystem);
+
+            doReturn(1000).when(app.autoTradingSystem).getCurrentMarketPrice(anyString());
+            doReturn(true).when(app.autoTradingSystem).checkIncreasingTrend(anyString());
+            doReturn(3).when(app.autoTradingSystem).getCount(anyInt(), anyInt());
+
+            app.buyNiceTiming("NEMO", 5000);
+
+            verify(mockNemoDriver, times(3)).buy(anyString(), anyInt(), anyInt());
         }
     }
 

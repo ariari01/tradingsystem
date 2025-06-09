@@ -45,8 +45,8 @@ public class AutoTradingSystem {
             throw new IllegalArgumentException();
         }
     }
-
-    public void sell(String stockCode, int price, int count) {
+  
+  public void sell(String stockCode, int price, int count) {
         isValidSellArguments(stockCode, price, count);
         stockBroker.sell(stockCode, price, count);
     }
@@ -72,5 +72,35 @@ public class AutoTradingSystem {
         stockBroker.getMarketPrice(stockCode, currentTimeInfo);
 
         return 0;
+    }
+
+    boolean checkIncreasingTrend(String stockCode){
+        return stockBroker.checkIncreasingTrend(stockCode);
+    }
+
+    int getCount(int amount, int currentPrice){
+        return amount / currentPrice;
+    }
+}
+
+class Application {
+    AutoTradingSystem autoTradingSystem;
+
+    public Application(AutoTradingSystem autoTradingSystem) {
+        this.autoTradingSystem = autoTradingSystem;
+    }
+
+    public void buyNiceTiming(String stockCode, int amount) throws InterruptedException {
+        // 현재가 도출
+        int currentPrice = autoTradingSystem.getCurrentMarketPrice(stockCode);
+
+        // 증가하는 추세 확인
+        if (!autoTradingSystem.checkIncreasingTrend(stockCode)) return;
+        if (amount < currentPrice) return;
+
+        int count = autoTradingSystem.getCount(amount, currentPrice);
+        for(int i=0; i<count; i++){
+            autoTradingSystem.buy(stockCode, currentPrice, count);
+        }
     }
 }
