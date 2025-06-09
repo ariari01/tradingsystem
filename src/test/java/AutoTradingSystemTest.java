@@ -10,11 +10,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AutoTradingSystemTest {
-    @Mock
-    KiwerAPI kiwerApi;
 
     @Mock
-    NemoAPI nemoApi;
+    StockBroker mockStockBroker;
 
     @Nested
     class LoginTest {
@@ -55,23 +53,33 @@ public class AutoTradingSystemTest {
         }
 
         @Test
-        void Broker가_Kiwer_일_때_로그인_성공() {
-            autoTradingSystem.selectStockBroker(new KiwerDriver(kiwerApi));
-            doNothing().when(kiwerApi).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+        void 로그인_성공() {
+            autoTradingSystem.selectStockBroker(mockStockBroker);
+            doNothing().when(mockStockBroker).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
 
             autoTradingSystem.login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
 
-            verify(kiwerApi, only()).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+            verify(mockStockBroker, only()).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+        }
+    }
+
+    @Nested
+    class SellNiceTimingTest {
+        AutoTradingSystem autoTradingSystem;
+
+        @BeforeEach
+        void setUp() {
+            autoTradingSystem = new AutoTradingSystem();
+            autoTradingSystem.selectStockBroker(mockStockBroker);
         }
 
         @Test
-        void Broker가_Nemo_일_때_로그인_성공() {
-            autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
-            doNothing().when(nemoApi).certification(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+        void 변동이_없을_때_매도하지_않는_경우() {
+            doReturn(10000).when(mockStockBroker).currentPrice(anyString());
 
-            autoTradingSystem.login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+            autoTradingSystem.sellNiceTiming("151515", 3500);
 
-            verify(nemoApi, only()).certification(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+            verify(mockStockBroker, never()).sell(anyString(), anyInt(), anyInt());
         }
     }
 }
