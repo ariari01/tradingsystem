@@ -91,7 +91,10 @@ public class AutoTradingSystemTest {
 
             verify(nemoApi, only()).certification(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
         }
+    }
 
+    @Nested
+    class BuyNiceTimingTest {
         @Mock
         KiwerAPI mockKiwerAPI;
 
@@ -99,13 +102,18 @@ public class AutoTradingSystemTest {
         NemoAPI mockNemoAPI;
 
         @Mock
-        KiwerDriver mockKiwerDriver = new KiwerDriver(kiwerApi);
+        KiwerDriver mockKiwerDriver;
 
         @Mock
-        NemoDriver mockNemoDriver = new NemoDriver(nemoApi);
+        NemoDriver mockNemoDriver;
+
+        @BeforeEach
+        void setUp() {
+            autoTradingSystem = new AutoTradingSystem();
+        }
 
         @Test
-        void 증가하는_추세_확인_kiwer_api() {
+        void 증가하는_추세_확인_kiwer_api() throws InterruptedException {
             StockBroker kiwerDriver = new KiwerDriver(mockKiwerAPI);
             autoTradingSystem.selectStockBroker(kiwerDriver);
             Application app = new Application(autoTradingSystem);
@@ -116,7 +124,7 @@ public class AutoTradingSystemTest {
         }
 
         @Test
-        void 증가하는_추세_확인_kiwer() {
+        void 증가하는_추세_확인_kiwer() throws InterruptedException {
             autoTradingSystem.selectStockBroker(mockKiwerDriver);
             Application app = new Application(autoTradingSystem);
 
@@ -137,7 +145,7 @@ public class AutoTradingSystemTest {
         }
 
         @Test
-        void 증가하는_추세_확인_nemo() {
+        void 증가하는_추세_확인_nemo() throws InterruptedException {
             autoTradingSystem.selectStockBroker(mockNemoDriver);
             Application app = new Application(autoTradingSystem);
 
@@ -147,34 +155,34 @@ public class AutoTradingSystemTest {
         }
 
         @Test
-        void 현재가_확인_kiwer() {
+        void 현재가_확인_kiwer() throws InterruptedException {
             autoTradingSystem.selectStockBroker(mockKiwerDriver);
             Application app = new Application(autoTradingSystem);
 
             app.buyNiceTiming("NEMO", 5000);
 
-            verify(mockKiwerDriver, times(1)).getPrice(anyString());
+            verify(mockKiwerDriver, times(1)).getMarketPrice(anyString(), anyInt());
         }
 
         @Test
-        void 현재가_확인_Nemo() {
+        void 현재가_확인_Nemo() throws InterruptedException {
             autoTradingSystem.selectStockBroker(mockNemoDriver);
             Application app = new Application(autoTradingSystem);
 
             app.buyNiceTiming("NEMO", 5000);
 
-            verify(mockNemoDriver, times(1)).getPrice(anyString());
+            verify(mockNemoDriver, times(1)).getMarketPrice(anyString(), anyInt());
         }
 
         @Spy
         AutoTradingSystem mockAutoTradingSystem;
 
         @Test
-        void 매수량_확인_kiwer() {
+        void 매수량_확인_kiwer() throws InterruptedException {
             mockAutoTradingSystem.selectStockBroker(mockKiwerDriver);
             Application app = new Application(mockAutoTradingSystem);
 
-            doReturn(1000).when(app.autoTradingSystem).getPrice(anyString());
+            doReturn(1000).when(app.autoTradingSystem).getCurrentMarketPrice(anyString());
             doReturn(true).when(app.autoTradingSystem).checkIncreasingTrend(anyString());
             doReturn(3).when(app.autoTradingSystem).getCount(anyInt(), anyInt());
 
@@ -184,11 +192,11 @@ public class AutoTradingSystemTest {
         }
 
         @Test
-        void 매수량_확인_Nemo() {
+        void 매수량_확인_Nemo() throws InterruptedException {
             mockAutoTradingSystem.selectStockBroker(mockNemoDriver);
             Application app = new Application(mockAutoTradingSystem);
 
-            doReturn(1000).when(app.autoTradingSystem).getPrice(anyString());
+            doReturn(1000).when(app.autoTradingSystem).getCurrentMarketPrice(anyString());
             doReturn(true).when(app.autoTradingSystem).checkIncreasingTrend(anyString());
             doReturn(3).when(app.autoTradingSystem).getCount(anyInt(), anyInt());
 

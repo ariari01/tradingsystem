@@ -72,6 +72,7 @@ public class AutoTradingSystem {
         stockBroker.getMarketPrice(stockCode, currentTimeInfo);
 
         return 0;
+    }
 
     boolean checkIncreasingTrend(String stockCode){
         return stockBroker.checkIncreasingTrend(stockCode);
@@ -89,9 +90,9 @@ class Application {
         this.autoTradingSystem = autoTradingSystem;
     }
 
-    public void buyNiceTiming(String stockCode, int amount){
+    public void buyNiceTiming(String stockCode, int amount) throws InterruptedException {
         // 현재가 도출
-        int currentPrice = autoTradingSystem.getPrice(stockCode);
+        int currentPrice = autoTradingSystem.getCurrentMarketPrice(stockCode);
 
         // 증가하는 추세 확인
         if (!autoTradingSystem.checkIncreasingTrend(stockCode)) return;
