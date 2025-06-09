@@ -22,6 +22,12 @@ public class AutoTradingSystem {
     }
 
     public void sellNiceTiming(String stockCode, int share) {
+        if (isNullOrEmpty(stockCode))
+            throw new IllegalArgumentException();
+
+        if (share <= 0)
+            throw new IllegalArgumentException();
+
         int curPrice = stockBroker.currentPrice(stockCode);
 
         for (int i = 0; i < 100; i++) {
