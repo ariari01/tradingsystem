@@ -1,10 +1,13 @@
 public class AutoTradingSystem {
+    public static final String KIWER = "Kiwer";
+    public static final String NEMO = "Nemo";
+
     private StockBroker stockBroker;
 
     void selectStockBroker(String name) {
         switch (name) {
-            case "Kiwer" -> stockBroker = new KiwerDriver();
-            case "Nemo" -> stockBroker = new NemoDriver();
+            case KIWER -> stockBroker = new KiwerDriver();
+            case NEMO -> stockBroker = new NemoDriver();
             default -> throw new RuntimeException();
         }
     }
