@@ -19,13 +19,14 @@ public class AutoTradingSystemTest {
 
     @Nested
     class LoginTest {
-
         AutoTradingSystem autoTradingSystem;
 
         public static final String NOT_IMPORTANT_ID = "ID";
         public static final String NOT_IMPORTANT_PASSWORD = "PASSWORD";
         public static final String EMPTY_STRING = "";
-
+        public static final String NOT_IMPORTANT_STOCK_CODE = "STOCKSTOCK";
+        public static final int NOT_IMPORTANT_PRICE = 123;
+        public static final int NOT_IMPORTANT_COUNT = 1;
 
         @BeforeEach
         void setUp() {
@@ -81,7 +82,7 @@ public class AutoTradingSystemTest {
             autoTradingSystem.selectStockBroker(new KiwerDriver(kiwerApi));
             doNothing().when(kiwerApi).sell(anyString(), anyInt(), anyInt());
 
-            autoTradingSystem.sell("qweqwe", 123, 1);
+            autoTradingSystem.sell(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_PRICE, NOT_IMPORTANT_COUNT);
 
             verify(kiwerApi, only()).sell(anyString(), anyInt(), anyInt());
         }
@@ -91,7 +92,7 @@ public class AutoTradingSystemTest {
             autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
             doNothing().when(nemoApi).sellingStock(anyString(), anyInt(), anyInt());
 
-            autoTradingSystem.sell("qweqwe", 123, 1);
+            autoTradingSystem.sell(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_PRICE, NOT_IMPORTANT_COUNT);
 
             verify(nemoApi, only()).sellingStock(anyString(), anyInt(), anyInt());
         }
