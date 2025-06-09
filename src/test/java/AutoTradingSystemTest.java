@@ -196,7 +196,7 @@ public class AutoTradingSystemTest {
 
         @Test
         void Nemo_주식코드로_현재_시장가격_가져오기() throws InterruptedException {
-            autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));c
+            autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
             int actual=autoTradingSystem.getCurrentMarketPrice(NOT_IMPORTANT_STOCK_CODE);
             assertNotNull(actual);
         }
