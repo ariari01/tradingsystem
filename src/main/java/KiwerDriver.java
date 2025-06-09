@@ -20,10 +20,9 @@ public class KiwerDriver implements StockBroker {
         api.sell(stockCode, price, count);
     }
     @Override
-    public void buy(String stockCode, int price, int quantity) {
-        if (price<0 ||quantity<0) throw new IllegalArgumentException("para is negative integer");
+    public void buy(String stockCode, int price, int count) {
         try {
-            api.buy(stockCode, quantity, price);
+            api.buy(stockCode, count, price);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

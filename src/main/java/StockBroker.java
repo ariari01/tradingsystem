@@ -3,5 +3,5 @@ public interface StockBroker {
 
     void sell(String stockCode, int price, int count);
 
-    void buy(String stockCode, int price, int quantity);
+    void buy(String stockCode, int price, int count);
 }
