@@ -106,5 +106,26 @@ public class AutoTradingSystemTest {
 
             verify(mockKiwerDriver, times(1)).checkIncreasingTrend(anyString());
         }
+
+        @Test
+        void 증가하는_추세_확인_nemo_api() throws InterruptedException {
+            StockBroker nemoDriver = new NemoDriver(mockNemoAPI);
+            autoTradingSystem.selectStockBroker(nemoDriver);
+            Application app = new Application(autoTradingSystem);
+
+            app.buyNiceTiming("KIWER", 5000);
+
+            verify(mockNemoAPI, atLeast(2)).getMarketPrice(anyString(), anyInt());
+        }
+
+        @Test
+        void 증가하는_추세_확인_nemo() {
+            autoTradingSystem.selectStockBroker(mockNemoDriver);
+            Application app = new Application(autoTradingSystem);
+
+            app.buyNiceTiming("KIWER", 5000);
+
+            verify(mockNemoDriver, times(1)).checkIncreasingTrend(anyString());
+        }
     }
 }
