@@ -8,4 +8,10 @@ public class AutoTradingSystem {
             default -> throw new RuntimeException();
         }
     }
+
+    public void login(String id, String password) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID is Null");
+        }
+    }
 }

@@ -20,21 +20,11 @@ public class UnitTest {
     class LoginTest {
 
         @Test
-        void Kiwer_로그인_시_ID가_Null이면_예외발생() {
+        void 시스템_로그인_시_ID가_Null이면_예외발생() {
             AutoTradingSystem autoTradingSystem = new AutoTradingSystem();
-            autoTradingSystem.selectStockBroker("Kiwer");
 
             assertThatThrownBy(() -> autoTradingSystem.login(null, "PASSWORD"))
-                    .isInstanceOf(Exception.class);
-        }
-
-        @Test
-        void Nemo_로그인_시_ID가_Null이면_예외발생() {
-            AutoTradingSystem autoTradingSystem = new AutoTradingSystem();
-            autoTradingSystem.selectStockBroker("Nemo");
-
-            assertThatThrownBy(() -> autoTradingSystem.login(null, "PASSWORD"))
-                    .isInstanceOf(Exception.class);
+                    .isInstanceOf(IllegalArgumentException.class);
         }
     }
 }
