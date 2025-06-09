@@ -13,7 +13,7 @@ public class AutoTradingSystem {
     }
 
     public void login(String id, String password) {
-        if (id == null) {
+        if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("ID is Null");
         }
     }
