@@ -11,10 +11,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class UnitTest {
     @Mock
-    KiwerDriver kiwerDriver;
+    KiwerAPI kiwerApi;
 
     @Mock
-    NemoDriver nemoDriver;
+    NemoAPI nemoApi;
 
     @Nested
     class LoginTest {
@@ -56,22 +56,22 @@ public class UnitTest {
 
         @Test
         void Broker가_Kiwer_일_때_로그인_성공() {
-            autoTradingSystem.selectStockBroker(kiwerDriver);
-            doNothing().when(kiwerDriver).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+            autoTradingSystem.selectStockBroker(new KiwerDriver(kiwerApi));
+            doNothing().when(kiwerApi).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
 
             autoTradingSystem.login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
 
-            verify(kiwerDriver, only()).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+            verify(kiwerApi, only()).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
         }
 
         @Test
         void Broker가_Nemo_일_때_로그인_성공() {
-            autoTradingSystem.selectStockBroker(nemoDriver);
-            doNothing().when(nemoDriver).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+            autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
+            doNothing().when(nemoApi).certification(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
 
             autoTradingSystem.login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
 
-            verify(nemoDriver, only()).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+            verify(nemoApi, only()).certification(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
         }
     }
 }

@@ -1,5 +1,13 @@
 public class NemoDriver implements StockBroker {
-    NemoAPI api = new NemoAPI();
+    private final NemoAPI api;
+
+    public NemoDriver() {
+        api = new NemoAPI();
+    }
+
+    public NemoDriver(NemoAPI api) {
+        this.api = api;
+    }
 
     @Override
     public void login(String id, String password) {
