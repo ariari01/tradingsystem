@@ -20,4 +20,15 @@ public class AutoTradingSystem {
     private boolean isNullOrEmpty(String string) {
         return string == null || string.isEmpty();
     }
+
+    private static void isValidSellArguments(String stockCode, int price, int count) {
+        if (stockCode.length() == 0 || price <= 0 || count <= 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void sell(String stockCode, int price, int count) {
+        isValidSellArguments(stockCode, price, count);
+        stockBroker.sell(stockCode, price, count);
+    }
 }
