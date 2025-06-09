@@ -28,5 +28,13 @@ public class UnitTest {
             assertThatThrownBy(() -> autoTradingSystem.login(null, NOT_IMPORTANT_PASSWORD))
                     .isInstanceOf(IllegalArgumentException.class);
         }
+
+        @Test
+        void 시스템_로그인_시_ID가_Empty이면_예외발생() {
+            AutoTradingSystem autoTradingSystem = new AutoTradingSystem();
+
+            assertThatThrownBy(() -> autoTradingSystem.login("", NOT_IMPORTANT_PASSWORD))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
     }
 }
