@@ -55,5 +55,26 @@ public class UnitTest {
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
+        @Test
+        void Broker가_Kiwer_일_때_로그인_성공() {
+            AutoTradingSystem autoTradingSystem = new AutoTradingSystem();
+            autoTradingSystem.selectStockBroker("Kiwer");
+            doNothing().when(kiwerAPI).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+
+            autoTradingSystem.login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+
+            verify(kiwerAPI, only()).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+        }
+
+        @Test
+        void Broker가_Nemo_일_때_로그인_성공() {
+            AutoTradingSystem autoTradingSystem = new AutoTradingSystem();
+            autoTradingSystem.selectStockBroker("Kiwer");
+            doNothing().when(nemoAPI).certification(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+
+            autoTradingSystem.login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+
+            verify(kiwerAPI, only()).login(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
+        }
     }
 }
