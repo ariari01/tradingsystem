@@ -29,7 +29,6 @@ public class AutoTradingSystem {
             throw new IllegalArgumentException();
 
         int prevPrice = stockBroker.currentPrice(stockCode);
-
         for (int i = 0; i < 100; i++) {
             int curPrice = stockBroker.currentPrice(stockCode);
             if (prevPrice > curPrice) {
