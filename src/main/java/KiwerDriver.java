@@ -15,6 +15,16 @@ public class KiwerDriver implements StockBroker {
     }
 
     @Override
+    public void buy(String stockCode, int price, int count) {
+        api.buy(stockCode, price, count);
+    }
+
+    @Override
+    public int getPrice(String stockCode) {
+        return api.currentPrice(stockCode);
+    }
+
+    @Override
     public boolean checkIncreasingTrend(String stockCode) {
         try {
             int currentPrice = api.currentPrice(stockCode);

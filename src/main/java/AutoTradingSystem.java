@@ -21,9 +21,27 @@ public class AutoTradingSystem {
         return string == null || string.isEmpty();
     }
 
+    public void buy(String stockCode, int price, int count) {
+        isValidBuyArguments(stockCode, price, count);
+        stockBroker.buy(stockCode, price, count);
+    }
+
+    private static void isValidBuyArguments(String stockCode, int price, int count) {
+        if (stockCode.length() == 0 || price <= 0 || count <= 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public int getPrice(String stockCode){
+        return stockBroker.getPrice(stockCode);
+    }
+
     boolean checkIncreasingTrend(String stockCode){
-        if (stockBroker.checkIncreasingTrend(stockCode)) return true;
-        return false;
+        return stockBroker.checkIncreasingTrend(stockCode);
+    }
+
+    int getCount(int amount, int currentPrice){
+        return amount / currentPrice;
     }
 }
 
@@ -35,8 +53,16 @@ class Application {
     }
 
     public void buyNiceTiming(String stockCode, int amount){
+        // 현재가 도출
+        int currentPrice = autoTradingSystem.getPrice(stockCode);
+
         // 증가하는 추세 확인
         if (!autoTradingSystem.checkIncreasingTrend(stockCode)) return;
+        if (amount < currentPrice) return;
 
+        int count = autoTradingSystem.getCount(amount, currentPrice);
+        for(int i=0; i<count; i++){
+            autoTradingSystem.buy(stockCode, currentPrice, count);
+        }
     }
 }

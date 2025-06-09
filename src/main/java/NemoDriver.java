@@ -15,6 +15,21 @@ public class NemoDriver implements StockBroker {
     }
 
     @Override
+    public void buy(String stockCode, int price, int count) {
+        api.purchasingStock(stockCode, price, count);
+    }
+
+    @Override
+    public int getPrice(String stockCode) {
+        try {
+            return api.getMarketPrice(stockCode, 1000);
+        } catch (InterruptedException e){
+            System.out.println("[ERROR] checkIncreasingTrend " + e.getMessage());
+        }
+        return 0;
+    }
+
+    @Override
     public boolean checkIncreasingTrend(String stockCode) {
         try {
             int currentPrice = api.getMarketPrice(stockCode, 1000);
