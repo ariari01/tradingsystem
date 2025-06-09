@@ -10,6 +10,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AutoTradingSystemTest {
+    public static final String EMPTY_STRING = "";
 
     @Mock
     StockBroker mockStockBroker;
@@ -21,7 +22,6 @@ public class AutoTradingSystemTest {
 
         public static final String NOT_IMPORTANT_ID = "ID";
         public static final String NOT_IMPORTANT_PASSWORD = "PASSWORD";
-        public static final String EMPTY_STRING = "";
 
         @BeforeEach
         void setUp() {
@@ -86,7 +86,7 @@ public class AutoTradingSystemTest {
 
         @Test
         void 입력된_종목코드가_Empty_String인_경우() {
-            assertThatThrownBy(() -> autoTradingSystem.sellNiceTiming("", NOT_IMPORTANT_STOCK_SHARE))
+            assertThatThrownBy(() -> autoTradingSystem.sellNiceTiming(EMPTY_STRING, NOT_IMPORTANT_STOCK_SHARE))
                     .isInstanceOf(IllegalArgumentException.class);
 
             verify(mockStockBroker, never()).currentPrice(anyString());
