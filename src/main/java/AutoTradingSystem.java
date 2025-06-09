@@ -16,5 +16,10 @@ public class AutoTradingSystem {
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("ID is Null");
         }
+
+        if (password == null || password.isEmpty()) {
+            throw new IllegalArgumentException("PASSWORD is Null");
+        }
+
     }
 }
