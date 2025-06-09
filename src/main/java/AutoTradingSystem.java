@@ -1,7 +1,11 @@
 public class AutoTradingSystem {
-    private StockBrocker stockBrocker;
+    private StockBroker stockBroker;
 
-    public AutoTradingSystem(StockBrocker stockBrocker) {
-        this.stockBrocker = stockBrocker;
+    void selectStockBroker(String name) {
+        switch (name) {
+            case "Kiwer" -> stockBroker = new KiwerDriver();
+            case "Nemo" -> stockBroker = new NemoDriver();
+            default -> throw new RuntimeException();
+        }
     }
 }
