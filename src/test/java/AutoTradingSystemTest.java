@@ -98,6 +98,7 @@ public class AutoTradingSystemTest {
         public static final int NOT_IMPORTANT_CURRENT_STOCK_PRICE = 10000;
         public static final int NOT_IMPORTANT_DECREASED_PRICE = NOT_IMPORTANT_CURRENT_STOCK_PRICE - 1000;
         public static final int WANTED_NUMBER_OF_CURRENT_PRICE_INVOCATIONS = AutoTradingSystem.MAX_SELL_NICE_COUNT + 1;
+
         AutoTradingSystem autoTradingSystem;
 
         @BeforeEach
@@ -168,6 +169,88 @@ public class AutoTradingSystemTest {
             autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
 
             verify(mockStockBroker, times(1)).sell(anyString(), anyInt(), anyInt());
+        }
+
+        @Nested
+        class KiwerTest {
+
+            @BeforeEach
+            void setUp() {
+                autoTradingSystem.selectStockBroker(new KiwerDriver(kiwerApi));
+            }
+
+            @Test
+            void 변동이_없을_때_매도하지_않는_경우() {
+                doReturn(NOT_IMPORTANT_CURRENT_STOCK_PRICE).when(kiwerApi).currentPrice(anyString());
+
+                autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
+
+                verify(kiwerApi, times(WANTED_NUMBER_OF_CURRENT_PRICE_INVOCATIONS)).currentPrice(anyString());
+                verify(kiwerApi, never()).sell(anyString(), anyInt(), anyInt());
+            }
+
+            @Test
+            void 상승_추세가_100회_동안_계속될_때_매도하지_않는_경우() {
+                AtomicInteger price = new AtomicInteger(NOT_IMPORTANT_CURRENT_STOCK_PRICE);
+                doAnswer(invocationOnMock -> price.getAndAdd(100))
+                        .when(kiwerApi).currentPrice(anyString());
+
+                autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
+
+                verify(kiwerApi, times(WANTED_NUMBER_OF_CURRENT_PRICE_INVOCATIONS)).currentPrice(anyString());
+                verify(kiwerApi, never()).sell(anyString(), anyInt(), anyInt());
+            }
+
+            @Test
+            void 하락_추세가_발생_시_매도하는_경우() {
+                doReturn(NOT_IMPORTANT_CURRENT_STOCK_PRICE, NOT_IMPORTANT_DECREASED_PRICE)
+                        .when(kiwerApi).currentPrice(anyString());
+
+                autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
+
+                verify(kiwerApi, times(1)).sell(anyString(), anyInt(), anyInt());
+            }
+        }
+
+        @Nested
+        class NemoTest {
+
+            @BeforeEach
+            void setUp() {
+                autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
+            }
+
+            @Test
+            void 변동이_없을_때_매도하지_않는_경우() throws InterruptedException {
+                doReturn(NOT_IMPORTANT_CURRENT_STOCK_PRICE).when(nemoApi).getMarketPrice(anyString(), anyInt());
+
+                autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
+
+                verify(nemoApi, times(WANTED_NUMBER_OF_CURRENT_PRICE_INVOCATIONS)).getMarketPrice(anyString(), anyInt());
+                verify(nemoApi, never()).sellingStock(anyString(), anyInt(), anyInt());
+            }
+
+            @Test
+            void 상승_추세가_100회_동안_계속될_때_매도하지_않는_경우() throws InterruptedException {
+                AtomicInteger price = new AtomicInteger(NOT_IMPORTANT_CURRENT_STOCK_PRICE);
+                doAnswer(invocationOnMock -> price.getAndAdd(100))
+                        .when(nemoApi).getMarketPrice(anyString(), anyInt());
+
+                autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
+
+                verify(nemoApi, times(WANTED_NUMBER_OF_CURRENT_PRICE_INVOCATIONS)).getMarketPrice(anyString(), anyInt());
+                verify(nemoApi, never()).sellingStock(anyString(), anyInt(), anyInt());
+            }
+
+            @Test
+            void 하락_추세가_발생_시_매도하는_경우() throws InterruptedException {
+                doReturn(NOT_IMPORTANT_CURRENT_STOCK_PRICE, NOT_IMPORTANT_DECREASED_PRICE)
+                        .when(nemoApi).getMarketPrice(anyString(), anyInt());
+
+                autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
+
+                verify(nemoApi, times(1)).sellingStock(anyString(), anyInt(), anyInt());
+            }
         }
     }
 }
