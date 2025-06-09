@@ -1,4 +1,5 @@
 public class AutoTradingSystem {
+    public static final int MAX_SELL_NICE_COUNT = 100;
     private StockBroker stockBroker;
 
     void selectStockBroker(StockBroker stockBroker) {
@@ -19,6 +20,24 @@ public class AutoTradingSystem {
 
     private boolean isNullOrEmpty(String string) {
         return string == null || string.isEmpty();
+    }
+
+    public void sellNiceTiming(String stockCode, int share) throws InterruptedException {
+        if (isNullOrEmpty(stockCode))
+            throw new IllegalArgumentException();
+
+        if (share <= 0)
+            throw new IllegalArgumentException();
+
+        int prevPrice = stockBroker.getMarketPrice(stockCode, 100);
+        for (int i = 0; i < MAX_SELL_NICE_COUNT; i++) {
+            int curPrice = stockBroker.getMarketPrice(stockCode, 100);
+            if (prevPrice > curPrice) {
+                stockBroker.sell(stockCode, curPrice, share);
+                return;
+            }
+            prevPrice = curPrice;
+        }
     }
 
     private static void isValidSellArguments(String stockCode, int price, int count) {
@@ -43,8 +62,6 @@ public class AutoTradingSystem {
         }
     }
 
-
-
     int getCurrentMarketPrice(String stockCode) throws InterruptedException {
 
         if (isNullOrEmpty(stockCode)) {
@@ -56,5 +73,4 @@ public class AutoTradingSystem {
 
         return 0;
     }
-
 }

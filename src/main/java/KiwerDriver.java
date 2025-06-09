@@ -1,6 +1,6 @@
 
 public class KiwerDriver implements StockBroker {
-    private final KiwerAPI api;
+    KiwerAPI api = new KiwerAPI();
 
     public KiwerDriver() {
         api = new KiwerAPI();
@@ -9,6 +9,7 @@ public class KiwerDriver implements StockBroker {
     public KiwerDriver(KiwerAPI api) {
         this.api = api;
     }
+
 
     @Override
     public void login(String id, String password) {
@@ -19,6 +20,7 @@ public class KiwerDriver implements StockBroker {
     public void sell(String stockCode, int price, int count) {
         api.sell(stockCode, price, count);
     }
+  
     @Override
     public void buy(String stockCode, int price, int count) {
         try {
@@ -30,12 +32,13 @@ public class KiwerDriver implements StockBroker {
 
 
     @Override
-    public void getMarketPrice(String stockCode,int min)  {
+    public int getMarketPrice(String stockCode,int min) throws InterruptedException {
         //Kiwer는 현재 시간의 Price만 제공한다.
         if(min<=1){
-            api.currentPrice(stockCode);
+            return api.currentPrice(stockCode);
         }else {
-            return ;
+            Thread.sleep(min);
+            return api.currentPrice(stockCode);
         }
     }
 }
