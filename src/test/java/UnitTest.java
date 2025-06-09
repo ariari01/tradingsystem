@@ -9,6 +9,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class UnitTest {
+    @Mock
+    KiwerDriver kiwerMock;
+
+    @Mock
+    NemoDriver nemoDriver;
+
+    @Test
+    void kiwer를_선택하면_KiwerDriver_반환() {
+        StockBrocker broker = StockBrocker.selectStockBroker("kiwer");
+
+        assertThat(broker).isInstanceOf(KiwerDriver.class);
+    }
+
+    @Test
+    void Nemo를_선택하면_NemoDriver_반환() {
+        StockBrocker broker = StockBrocker.selectStockBroker("Nemo");
+
+        assertThat(broker).isInstanceOf(NemoDriver.class);
+    }
 
     @Test
     void Kiwer로그인_동작_확인() {
