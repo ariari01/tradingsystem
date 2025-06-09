@@ -20,6 +20,7 @@ public class UnitTest {
     class LoginTest {
 
         public static final String NOT_IMPORTANT_PASSWORD = "PASSWORD";
+        public static final String EMPTY_STRING = "";
 
         @Test
         void 시스템_로그인_시_ID가_Null이면_예외발생() {
@@ -33,7 +34,7 @@ public class UnitTest {
         void 시스템_로그인_시_ID가_Empty이면_예외발생() {
             AutoTradingSystem autoTradingSystem = new AutoTradingSystem();
 
-            assertThatThrownBy(() -> autoTradingSystem.login("", NOT_IMPORTANT_PASSWORD))
+            assertThatThrownBy(() -> autoTradingSystem.login(EMPTY_STRING, NOT_IMPORTANT_PASSWORD))
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }
