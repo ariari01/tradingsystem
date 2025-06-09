@@ -36,7 +36,7 @@ public class UnitTest {
     }
 
     @Test
-    void 로그인시_ID가_null이면_예외발생() {
+    void Kiwer로그인시_ID가_null이면_예외발생() {
         StockBrocker broker = new KiwerDriver(); // 구현 예정
 
         assertThatThrownBy(() -> broker.login(null, "1234"))
@@ -51,7 +51,7 @@ public class UnitTest {
     }
 
     @Test
-    void 로그인시_ID가_null이면_예외발생() {
+    void Nemo로그인시_ID가_null이면_예외발생() {
         StockBrocker broker = new NemoDriver(); // 구현 예정
 
         assertThatThrownBy(() -> broker.login(null, "1234"))
