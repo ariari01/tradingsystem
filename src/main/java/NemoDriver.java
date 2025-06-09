@@ -18,4 +18,13 @@ public class NemoDriver implements StockBroker {
     public void sell(String stockCode, int price, int count) {
         api.sellingStock(stockCode, price, count);
     }
+
+    @Override
+    public void buy(String stockCode, int price, int quantity) {
+        try {
+            api.purchasingStock(stockCode, price, quantity);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
