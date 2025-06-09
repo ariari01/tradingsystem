@@ -32,12 +32,13 @@ public class KiwerDriver implements StockBroker {
 
 
     @Override
-    public void getMarketPrice(String stockCode,int min)  {
+    public int getMarketPrice(String stockCode,int min) throws InterruptedException {
         //Kiwer는 현재 시간의 Price만 제공한다.
         if(min<=1){
-            api.currentPrice(stockCode);
+            return api.currentPrice(stockCode);
         }else {
-            return ;
+            Thread.sleep(min);
+            return api.currentPrice(stockCode);
         }
     }
 }

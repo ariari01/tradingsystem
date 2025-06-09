@@ -22,16 +22,16 @@ public class AutoTradingSystem {
         return string == null || string.isEmpty();
     }
 
-    public void sellNiceTiming(String stockCode, int share) {
+    public void sellNiceTiming(String stockCode, int share) throws InterruptedException {
         if (isNullOrEmpty(stockCode))
             throw new IllegalArgumentException();
 
         if (share <= 0)
             throw new IllegalArgumentException();
 
-        int prevPrice = stockBroker.getCurrentMarketPrice(stockCode, 100);
+        int prevPrice = stockBroker.getMarketPrice(stockCode, 100);
         for (int i = 0; i < MAX_SELL_NICE_COUNT; i++) {
-            int curPrice = stockBroker.getCurrentMarketPrice(stockCode, 100);
+            int curPrice = stockBroker.getMarketPrice(stockCode, 100);
             if (prevPrice > curPrice) {
                 stockBroker.sell(stockCode, curPrice, share);
                 return;

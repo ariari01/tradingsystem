@@ -2,19 +2,19 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.concurrent.atomic.AtomicInteger;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AutoTradingSystemTest {
     public static final String EMPTY_STRING = "";
+
+    AutoTradingSystem autoTradingSystem;
 
     @Mock
     StockBroker mockStockBroker;
@@ -27,7 +27,6 @@ public class AutoTradingSystemTest {
 
     @Nested
     class LoginTest {
-        AutoTradingSystem autoTradingSystem;
 
         public static final String NOT_IMPORTANT_ID = "ID";
         public static final String NOT_IMPORTANT_PASSWORD = "PASSWORD";
@@ -107,63 +106,63 @@ public class AutoTradingSystemTest {
         }
 
         @Test
-        void 입력된_종목코드가_Null인_경우() {
+        void 입력된_종목코드가_Null인_경우() throws InterruptedException {
             assertThatThrownBy(() -> autoTradingSystem.sellNiceTiming(null, NOT_IMPORTANT_STOCK_SHARE))
                     .isInstanceOf(IllegalArgumentException.class);
 
-            verify(mockStockBroker, never()).currentPrice(anyString());
+            verify(mockStockBroker, never()).getMarketPrice(anyString(), anyInt());
         }
 
         @Test
-        void 입력된_종목코드가_Empty_String인_경우() {
+        void 입력된_종목코드가_Empty_String인_경우() throws InterruptedException {
             assertThatThrownBy(() -> autoTradingSystem.sellNiceTiming(EMPTY_STRING, NOT_IMPORTANT_STOCK_SHARE))
                     .isInstanceOf(IllegalArgumentException.class);
 
-            verify(mockStockBroker, never()).currentPrice(anyString());
+            verify(mockStockBroker, never()).getMarketPrice(anyString(), anyInt());
         }
 
         @Test
-        void 입력된_주식_수량이_0인_경우() {
+        void 입력된_주식_수량이_0인_경우() throws InterruptedException {
             assertThatThrownBy(() -> autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, 0))
                     .isInstanceOf(IllegalArgumentException.class);
 
-            verify(mockStockBroker, never()).currentPrice(anyString());
+            verify(mockStockBroker, never()).getMarketPrice(anyString(), anyInt());
         }
 
         @Test
-        void 입력된_주식_수량이_마이너스인_경우() {
+        void 입력된_주식_수량이_마이너스인_경우() throws InterruptedException {
             assertThatThrownBy(() -> autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, -1))
                     .isInstanceOf(IllegalArgumentException.class);
 
-            verify(mockStockBroker, never()).currentPrice(anyString());
+            verify(mockStockBroker, never()).getMarketPrice(anyString(), anyInt());
         }
 
         @Test
-        void 변동이_없을_때_매도하지_않는_경우() {
-            doReturn(NOT_IMPORTANT_CURRENT_STOCK_PRICE).when(mockStockBroker).currentPrice(anyString());
+        void 변동이_없을_때_매도하지_않는_경우() throws InterruptedException {
+            doReturn(NOT_IMPORTANT_CURRENT_STOCK_PRICE).when(mockStockBroker).getMarketPrice(anyString(), anyInt());
 
             autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
 
-            verify(mockStockBroker, times(WANTED_NUMBER_OF_CURRENT_PRICE_INVOCATIONS)).currentPrice(anyString());
+            verify(mockStockBroker, times(WANTED_NUMBER_OF_CURRENT_PRICE_INVOCATIONS)).getMarketPrice(anyString(), anyInt());
             verify(mockStockBroker, never()).sell(anyString(), anyInt(), anyInt());
         }
 
         @Test
-        void 상승_추세가_100회_동안_계속될_때_매도하지_않는_경우() {
+        void 상승_추세가_100회_동안_계속될_때_매도하지_않는_경우() throws InterruptedException {
             AtomicInteger price = new AtomicInteger(NOT_IMPORTANT_CURRENT_STOCK_PRICE);
             doAnswer(invocationOnMock -> price.getAndAdd(100))
-                    .when(mockStockBroker).currentPrice(anyString());
+                    .when(mockStockBroker).getMarketPrice(anyString(), anyInt());
 
             autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
 
-            verify(mockStockBroker, times(WANTED_NUMBER_OF_CURRENT_PRICE_INVOCATIONS)).currentPrice(anyString());
+            verify(mockStockBroker, times(WANTED_NUMBER_OF_CURRENT_PRICE_INVOCATIONS)).getMarketPrice(anyString(), anyInt());
             verify(mockStockBroker, never()).sell(anyString(), anyInt(), anyInt());
         }
 
         @Test
-        void 하락_추세가_발생_시_매도하는_경우() {
+        void 하락_추세가_발생_시_매도하는_경우() throws InterruptedException {
             doReturn(NOT_IMPORTANT_CURRENT_STOCK_PRICE, NOT_IMPORTANT_DECREASED_PRICE)
-                    .when(mockStockBroker).currentPrice(anyString());
+                    .when(mockStockBroker).getMarketPrice(anyString(), anyInt());
 
             autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
 
@@ -179,7 +178,7 @@ public class AutoTradingSystemTest {
             }
 
             @Test
-            void 변동이_없을_때_매도하지_않는_경우() {
+            void 변동이_없을_때_매도하지_않는_경우() throws InterruptedException {
                 doReturn(NOT_IMPORTANT_CURRENT_STOCK_PRICE).when(kiwerApi).currentPrice(anyString());
 
                 autoTradingSystem.sellNiceTiming(NOT_IMPORTANT_STOCK_CODE, NOT_IMPORTANT_STOCK_SHARE);
@@ -189,7 +188,7 @@ public class AutoTradingSystemTest {
             }
 
             @Test
-            void 상승_추세가_100회_동안_계속될_때_매도하지_않는_경우() {
+            void 상승_추세가_100회_동안_계속될_때_매도하지_않는_경우() throws InterruptedException {
                 AtomicInteger price = new AtomicInteger(NOT_IMPORTANT_CURRENT_STOCK_PRICE);
                 doAnswer(invocationOnMock -> price.getAndAdd(100))
                         .when(kiwerApi).currentPrice(anyString());
@@ -201,7 +200,7 @@ public class AutoTradingSystemTest {
             }
 
             @Test
-            void 하락_추세가_발생_시_매도하는_경우() {
+            void 하락_추세가_발생_시_매도하는_경우() throws InterruptedException {
                 doReturn(NOT_IMPORTANT_CURRENT_STOCK_PRICE, NOT_IMPORTANT_DECREASED_PRICE)
                         .when(kiwerApi).currentPrice(anyString());
 
@@ -252,6 +251,8 @@ public class AutoTradingSystemTest {
             }
         }
     }
+
+    @Nested
     class SellTest {
         AutoTradingSystem autoTradingSystem;
 
@@ -290,9 +291,7 @@ public class AutoTradingSystemTest {
         @DisplayName("잘못된 파라메터 값으로 sell 호출 시 에러")
         void invalid_input_for_sell() {
             autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> {
-                autoTradingSystem.sell("", 0, 0);
-            });
+            Assertions.assertThrows(IllegalArgumentException.class, () -> autoTradingSystem.sell("", 0, 0));
         }
     }
 
