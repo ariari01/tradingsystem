@@ -13,4 +13,19 @@ public class NemoDriver implements StockBroker {
     public void login(String id, String password) {
         api.certification(id, password);
     }
+
+    @Override
+    public void buy(String stockCode, int count, int price) {
+
+    }
+
+    @Override
+    public void sell(String stockCode, int count, int price) {
+
+    }
+
+    @Override
+    public int currentPrice(String stockCode) {
+        return 0;
+    }
 }
