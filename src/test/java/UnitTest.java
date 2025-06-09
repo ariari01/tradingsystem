@@ -19,6 +19,7 @@ public class UnitTest {
     @Nested
     class LoginTest {
 
+        public static final String NOT_IMPORTANT_ID = "ID";
         public static final String NOT_IMPORTANT_PASSWORD = "PASSWORD";
         public static final String EMPTY_STRING = "";
 
@@ -42,7 +43,7 @@ public class UnitTest {
         void 시스템_로그인_시_Password가_Null이면_예외발생() {
             AutoTradingSystem autoTradingSystem = new AutoTradingSystem();
 
-            assertThatThrownBy(() -> autoTradingSystem.login("ID", null))
+            assertThatThrownBy(() -> autoTradingSystem.login(NOT_IMPORTANT_ID, null))
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
@@ -50,7 +51,7 @@ public class UnitTest {
         void 시스템_로그인_시_Password가_Empty이면_예외발생() {
             AutoTradingSystem autoTradingSystem = new AutoTradingSystem();
 
-            assertThatThrownBy(() -> autoTradingSystem.login("ID", EMPTY_STRING))
+            assertThatThrownBy(() -> autoTradingSystem.login(NOT_IMPORTANT_ID, EMPTY_STRING))
                     .isInstanceOf(IllegalArgumentException.class);
         }
 

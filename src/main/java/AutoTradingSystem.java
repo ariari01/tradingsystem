@@ -13,13 +13,17 @@ public class AutoTradingSystem {
     }
 
     public void login(String id, String password) {
-        if (id == null || id.isEmpty()) {
+        if (isNullOrEmpty(id)) {
             throw new IllegalArgumentException("ID is Null");
         }
 
-        if (password == null || password.isEmpty()) {
+        if (isNullOrEmpty(password)) {
             throw new IllegalArgumentException("PASSWORD is Null");
         }
 
+    }
+
+    private boolean isNullOrEmpty(String string) {
+        return string == null || string.isEmpty();
     }
 }
