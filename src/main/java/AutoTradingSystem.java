@@ -28,9 +28,15 @@ public class AutoTradingSystem {
         if (share <= 0)
             throw new IllegalArgumentException();
 
-        int curPrice = stockBroker.currentPrice(stockCode);
+        int prevPrice = stockBroker.currentPrice(stockCode);
 
         for (int i = 0; i < 100; i++) {
+            int curPrice = stockBroker.currentPrice(stockCode);
+            if (prevPrice > curPrice) {
+                stockBroker.sell(stockCode, share, curPrice);
+                return;
+            }
+            prevPrice = curPrice;
         }
     }
 }
