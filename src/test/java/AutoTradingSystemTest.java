@@ -73,5 +73,38 @@ public class AutoTradingSystemTest {
 
             verify(nemoApi, only()).certification(NOT_IMPORTANT_ID, NOT_IMPORTANT_PASSWORD);
         }
+
+        @Mock
+        KiwerAPI mockKiwerAPI;
+
+        @Mock
+        NemoAPI mockNemoAPI;
+
+        @Mock
+        KiwerDriver mockKiwerDriver = new KiwerDriver(kiwerApi);
+
+        @Mock
+        NemoDriver mockNemoDriver = new NemoDriver(nemoApi);
+
+        @Test
+        void 증가하는_추세_확인_kiwer_api() {
+            StockBroker kiwerDriver = new KiwerDriver(mockKiwerAPI);
+            autoTradingSystem.selectStockBroker(kiwerDriver);
+            Application app = new Application(autoTradingSystem);
+
+            app.buyNiceTiming("KIWER", 5000);
+
+            verify(mockKiwerAPI, atLeast(2)).currentPrice(anyString());
+        }
+
+        @Test
+        void 증가하는_추세_확인_kiwer() {
+            autoTradingSystem.selectStockBroker(mockKiwerDriver);
+            Application app = new Application(autoTradingSystem);
+
+            app.buyNiceTiming("KIWER", 5000);
+
+            verify(mockKiwerDriver, times(1)).checkIncreasingTrend(anyString());
+        }
     }
 }
