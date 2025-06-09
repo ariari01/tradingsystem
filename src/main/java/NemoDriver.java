@@ -26,4 +26,9 @@ public class NemoDriver implements StockBroker {
             System.out.println(e.getMessage());
         }
     }
+
+    @Override
+    public void getMarketPrice(String stockCode,int min) throws InterruptedException {
+        api.getMarketPrice(stockCode,min);
+    }
 }

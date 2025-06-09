@@ -43,4 +43,18 @@ public class AutoTradingSystem {
         }
     }
 
+
+
+    int getCurrentMarketPrice(String stockCode) throws InterruptedException {
+
+        if (isNullOrEmpty(stockCode)) {
+            throw new IllegalArgumentException("주식코드가 잘못되었습니다");
+        }
+
+        int currentTimeInfo = 0;
+        stockBroker.getMarketPrice(stockCode, currentTimeInfo);
+
+        return 0;
+    }
+
 }

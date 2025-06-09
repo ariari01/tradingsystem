@@ -9,6 +9,7 @@ import java.io.PrintStream;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -18,6 +19,9 @@ public class AutoTradingSystemTest {
 
     @Mock
     NemoAPI nemoApi;
+
+
+
 
     @Nested
     class LoginTest {
@@ -173,4 +177,40 @@ public class AutoTradingSystemTest {
             });
         }
     }
+
+    @Nested
+    class currentPriceTest {
+
+        AutoTradingSystem autoTradingSystem;
+
+        public static final String NOT_IMPORTANT_STOCK_CODE = "StockCode";
+
+        @BeforeEach
+        void setUp() {
+            autoTradingSystem = new AutoTradingSystem();
+        }
+
+
+        @Test
+        void 주식코드_값이NULL일때() throws InterruptedException {
+            assertThatThrownBy(() -> autoTradingSystem.getCurrentMarketPrice(null))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void Kiwer_주식코드로_현재_시장가격_가져오기() throws InterruptedException {
+            autoTradingSystem.selectStockBroker(new KiwerDriver(kiwerApi));
+            int actual=autoTradingSystem.getCurrentMarketPrice(NOT_IMPORTANT_STOCK_CODE);
+            assertNotNull(actual);
+        }
+
+        @Test
+        void Nemo_주식코드로_현재_시장가격_가져오기() throws InterruptedException {
+            autoTradingSystem.selectStockBroker(new NemoDriver(nemoApi));
+            int actual=autoTradingSystem.getCurrentMarketPrice(NOT_IMPORTANT_STOCK_CODE);
+            assertNotNull(actual);
+        }
+
+    }
+
 }
