@@ -1,7 +1,4 @@
 public class AutoTradingSystem {
-    public static final String KIWER = "Kiwer";
-    public static final String NEMO = "Nemo";
-
     private StockBroker stockBroker;
 
     void selectStockBroker(StockBroker stockBroker) {
